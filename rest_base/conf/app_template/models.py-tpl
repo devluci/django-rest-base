@@ -1,0 +1,11 @@
+from typing import Type
+
+from django.contrib.auth import get_user_model
+from rest_base.models import BaseModel, BaseUser
+
+User: Type[BaseUser] = get_user_model()
+
+
+# Create your models here.
+# class MyModel(BaseModel):
+#     pass

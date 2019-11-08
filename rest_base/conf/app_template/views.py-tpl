@@ -1,0 +1,11 @@
+from rest_framework import status
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
+from rest_framework.response import Response
+
+
+# Create your views here.
+# @permission_classes((IsAuthenticated,))
+# def my_view(request: Request) -> Response:
+#     return Response(status=status.HTTP_200_OK)

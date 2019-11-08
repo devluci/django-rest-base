@@ -1,0 +1,7 @@
+from rest_base.errors import Error
+
+
+{{ app_name }} = Error('{{ app_name }}')
+
+# Register your own errors here
+# SOMETHING_WENT_WRONG = {{ app_name }}('SomethingWentWrong')

@@ -1,0 +1,9 @@
+from django.urls import re_path
+from rest_base.urls import method_branch
+
+from . import views
+
+# Register you views here.
+# urlpatterns = [
+#     re_path(r'^my_endpoint/?$', method_branch(GET=views.my_view)),
+# ]
