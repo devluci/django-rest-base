@@ -32,10 +32,10 @@ class INVALID:
 
 class ModuleRegistry:
     def __init__(self, name: str, default: Any = EMPTY, include_module: bool = False):
-        self.name = name
-        self._registry = dict()
-        self._default = default
-        self._include_module = include_module
+        super().__setattr__('name', name)
+        super().__setattr__('_registry', dict())
+        super().__setattr__('_default', default)
+        super().__setattr__('_include_module', include_module)
 
     def __getattr__(self, name, default=INVALID):
         value = self._registry.get(name, default)
