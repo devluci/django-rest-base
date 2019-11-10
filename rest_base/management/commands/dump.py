@@ -25,7 +25,11 @@ class Command(BaseCommand):
         if filename is None:
             filename = f"{model.split('.')[-1]}.json"
 
-        path = os.path.join(settings.BASE_DIR, base_settings.PREDEFINED_ROOT, filename)
+        try:
+            base_dir = settings.BASE_DIR
+        except AttributeError as e:
+            raise AttributeError('BASE_DIR must be defined in Django settings') from e
+        path = os.path.join(base_dir, base_settings.PREDEFINED_ROOT, filename)
 
         t = time.time()
         self.log(f'dump {model} instances to:')

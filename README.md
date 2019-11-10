@@ -117,7 +117,7 @@ class MyToken(BaseToken):
 
 By replacing the original Django `models.Model` with `rest_base.models.BaseModel`, several customized features can be used.
 - `created`, `last_modified` fields
-- `objects.update_or_create` only updates instance when original attributes and provided `defaults` are not same.
+- `objects.update_or_create` updates instance only if original attributes and `defaults` are not same.
 - `bulk_manager`
     - Supports deadlock free following methods. (PostgreSQL ONLY)
     - `update`, `bulk_update`, `delete`
@@ -243,7 +243,7 @@ REST_BASE = {
 }
 ```
 
-If `sentry-sdk` installed, `SENTRY_HOST` provided and `rest_base.errors.exception_handler` configured correctly,
+If `sentry-sdk` installed, `SENTRY_HOST` defined and `rest_base.errors.exception_handler` configured correctly,
 every unhandled exception from view will be reported to the Sentry.
 
 Handled exceptions also reported if you set `SENTRY_VERBOSE` to `True`.

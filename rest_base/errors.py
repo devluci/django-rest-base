@@ -24,14 +24,18 @@ SENTRY_ERROR_LEVEL = Literal['debug', 'info', 'warning', 'error', 'fatal']
 CODE_UNKNOWN = 'Unknown'
 
 
-sentry_enabled = bool(base_settings.SENTRY_HOST)
-sentry_verbose = base_settings.SENTRY_VERBOSE
+sentry_enabled = bool(getattr(base_settings, 'SENTRY_HOST', False))
+sentry_verbose = getattr(base_settings, 'SENTRY_VERBOSE', False)
 
 if sentry_enabled:
     try:
         import sentry_sdk
+        from sentry_sdk.integrations.django import DjangoIntegration
+
+        sentry_sdk.init(base_settings.SENTRY_HOST, integrations=[sentry_sdk.integrations.django.DjangoIntegration()])
     except ImportError:
         sentry_sdk = None
+        DjangoIntegration = None
 else:
     sentry_sdk = None
 
