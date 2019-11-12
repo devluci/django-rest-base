@@ -2,6 +2,7 @@ from typing import Type
 
 from django import urls
 from django.contrib import admin
+from django.contrib.admin import ModelAdmin
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -80,28 +81,27 @@ def model_admin(model: Type[models.Model], search_fields: list = None):
     list_display_sub = []
     list_display_link = dict()
 
-    base_fields = set(f.name for f in BaseModel._meta.fields)
+    base_fields = set(f.name for f in BaseModel._meta._get_fields(reverse=False))
 
-    for field in model._meta.fields:
+    for field in model._meta._get_fields(reverse=False):
         if not primary_key_display and field.primary_key:
             primary_key_display = [field.name]
             search_fields.append(field.name)
-        elif field.get_internal_type() == 'ForeignKey' or field.get_internal_type() == 'OneToOneField':
+        elif isinstance(field, models.ForeignKey):
             autocomplete_fields.append(field.name)
             list_display.append(field.name + '_link')
             list_display_link[field.name + '_link'] = _get_link_method(field)
+        elif isinstance(field, models.ManyToManyField):
+            list_display.append(field.name + '_link')
+            list_display_link[field.name + '_link'] = _get_multiple_link_method(field)
         elif field.name in base_fields:
             list_display_sub.append(field.name)
         else:
             list_display.append(field.name)
 
-    for field in model._meta.many_to_many:
-        list_display.append(field.name + '_link')
-        list_display_link[field.name + '_link'] = _get_multiple_link_method(field)
-
     return model, type(
         model.__name__ + 'Admin',
-        (admin.ModelAdmin,),
+        (ModelAdmin,),
         dict(
             search_fields=search_fields,
             autocomplete_fields=autocomplete_fields,
@@ -133,7 +133,7 @@ class GroupAdminForm(ModelForm):
         self.instance.user_set.set(self.cleaned_data['users'])
 
 
-class GroupAdmin(admin.ModelAdmin):
+class GroupAdmin(ModelAdmin):
     form = GroupAdminForm
     list_display = ['name', 'permissions_list', 'users']
     filter_horizontal = ['permissions']

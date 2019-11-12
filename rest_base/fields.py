@@ -7,6 +7,7 @@ from typing import Type, Callable, Any
 from django.db import ProgrammingError, OperationalError
 from django.db.models import Model, Field
 
+from rest_base.models import BaseModel
 from rest_base.settings import base_settings
 from rest_base.utils.registry import ModuleRegistry
 
@@ -128,14 +129,12 @@ class UniqueRandomChar(UniqueRandom):
         return _random
 
 
-def initialize_base_fields(model: Type[Model]) -> Type[Model]:
+def initialize_base_fields(model: Type[BaseModel]) -> Type[BaseModel]:
     app_label = model._meta.app_label
     model_name = model._meta.model_name
 
-    for field_name in dir(model):
-        field = getattr(model, field_name, None)
-        if not isinstance(field, Field):
-            continue
+    for field in model._meta._get_fields(reverse=False):
+        field_name = field.name
 
         if field.is_relation and field.remote_field.related_name is None:
             raise ValueError(
