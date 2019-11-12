@@ -108,8 +108,10 @@ class BulkUpdateManager(models.Manager):
 
 class BaseModelMeta(models.base.ModelBase):
     def __new__(cls, name, bases, attrs, **kwargs):
+        abstract = getattr(attrs.get('Meta', None), 'abstract', False)
         new_class = super().__new__(cls, name, bases, attrs, **kwargs)
-        initialize_base_fields(new_class, attrs)
+        if not abstract:
+            initialize_base_fields(new_class)
         return new_class
 
 

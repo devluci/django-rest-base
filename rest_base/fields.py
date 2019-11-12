@@ -2,7 +2,7 @@ import secrets
 from abc import ABC
 from inspect import isclass
 from math import ceil
-from typing import Type, Callable, Any, Dict
+from typing import Type, Callable, Any
 
 from django.db import ProgrammingError, OperationalError
 from django.db.models import Model, Field
@@ -128,15 +128,15 @@ class UniqueRandomChar(UniqueRandom):
         return _random
 
 
-def initialize_base_fields(model: Type[Model], attrs: Dict[str, Any]) -> Type[Model]:
+def initialize_base_fields(model: Type[Model]) -> Type[Model]:
     app_label = model._meta.app_label
     model_name = model._meta.model_name
 
-    for field_name, field in attrs.items():
+    for field_name in dir(model):
+        field = getattr(model, field_name, None)
         if not isinstance(field, Field):
             continue
 
-        field: Field
         if field.is_relation and field.remote_field.related_name is None:
             raise ValueError(
                 f"{model_name}.{field_name}.related_name must be explicitly provided."
