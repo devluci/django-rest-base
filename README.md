@@ -49,9 +49,9 @@ REST_FRAMEWORK = {
 ```python
 from rest_base.errors import Error
 
-my_app = Error('my_app')
+MyAppError = Error('my_app')
 
-MY_ERROR = my_app('My', 'Error')
+MY_ERROR = MyAppError('My', 'Error')
 ```
 
 #### `views.py`

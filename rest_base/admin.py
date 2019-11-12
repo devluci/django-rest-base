@@ -11,7 +11,7 @@ from django.forms import ModelForm, ModelMultipleChoiceField
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 
-from rest_base.models import BaseModel, BaseToken, BaseUser
+from rest_base.models import BaseModel, BaseUser
 from rest_base.settings import base_settings
 
 __all__ = ['model_admin']
@@ -164,8 +164,6 @@ class GroupAdmin(admin.ModelAdmin):
             return NULL
         return mark_safe('<br>'.join(link_list))
 
-
-admin.site.register(*model_admin(BaseToken, ['user__user_id', 'user__username']))
 
 admin.site.unregister(Group)
 admin.site.register(Group, GroupAdmin)

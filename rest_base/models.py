@@ -5,7 +5,7 @@ from math import log10
 from typing import Optional, Iterable, TypeVar, List, Tuple, Dict, Any, Type
 
 from django import db
-from django.contrib.auth import get_user_model
+from django.conf import settings
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.models import BaseUserManager as DjangoBaseUserManager
 from django.db import models, DatabaseError, transaction
@@ -25,8 +25,6 @@ __all__ = [
 ]
 
 Instance = TypeVar('Instance', bound=models.Model)
-
-User: Type[BaseUser] = get_user_model()
 
 
 class BaseQuerySet(models.QuerySet):
@@ -211,7 +209,7 @@ class BaseUser(BaseModel, AbstractBaseUser, PermissionsMixin):
 
 
 class BaseToken(BaseModel):
-    user = models.ForeignKey(BaseUser, on_delete=models.CASCADE, related_name='tokens')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='tokens')
     public_key = models.CharField(max_length=40, unique=True, default=UniqueRandomChar)
     secret_key = models.CharField(max_length=40, unique=True, default=UniqueRandomChar)
     duration = models.DurationField()
@@ -231,8 +229,8 @@ class BaseToken(BaseModel):
         return f'{self.__class__.__name__} ({self.user})'
 
     @classmethod
-    def new(cls, user: User, duration: timezone.timedelta = None, **kwargs) -> BaseToken:
-        user.raise_for_deactivated()
+    def new(cls, user: BaseUser, duration: timezone.timedelta = None, **kwargs) -> BaseToken:
+        user.raise_for_deactivation()
 
         if duration is None:
             duration = cls.TokenMeta.duration

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import traceback
-from typing import TypedDict, Literal, Optional, Union
+from typing import TypedDict, Literal, Optional, Union, Any
 
 from django.conf import settings
 from django.core.exceptions import PermissionDenied
@@ -38,6 +38,7 @@ if sentry_enabled:
         DjangoIntegration = None
 else:
     sentry_sdk = None
+    DjangoIntegration = None
 
 
 class Error(APIException):
@@ -48,6 +49,7 @@ class Error(APIException):
 
     class SerializedDetail(SerializedCode, total=False):
         detail: str
+        extra: Any
         traceback: str
 
     class Serialized(TypedDict):
@@ -55,7 +57,8 @@ class Error(APIException):
 
     def __init__(
             self, app_or_request: Union[str, HttpRequest, Request],
-            *args: str, code: str = None, detail: str = None, tb: str = None, status_code: int = None,
+            *args: str, code: str = None, detail: str = None, extra: Any = None,
+            tb: str = None, status_code: int = None,
     ):
         if type(app_or_request) is str:
             self.app = app_or_request
@@ -75,6 +78,8 @@ class Error(APIException):
         )
         if detail is not None:
             self.serialized['error']['detail'] = detail
+        if extra is not None:
+            self.serialized['error']['extra'] = extra
         if tb is not None:
             self.serialized['error']['traceback'] = tb
         if status_code is not None:
@@ -83,11 +88,11 @@ class Error(APIException):
         super().__init__(self.serialized, self.code)
 
     def __str__(self):
-        return f'Error ({self.code})'
+        return f'Error ({self.app}::{self.code})'
 
-    def __call__(self, *args, code: str = None, detail: str = None, tb: str = None) -> Error:
+    def __call__(self, *args, code: str = None, detail: str = None, extra: Any = None, tb: str = None) -> Error:
         code = code or '::'.join(args) or self.code
-        return Error(self.app, code=code, detail=detail, tb=tb)
+        return Error(self.app, code=code, detail=detail, extra=extra, tb=tb)
 
 
 def sentry_report(

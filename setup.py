@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf8') as f:
 
 setuptools.setup(
     name='django-rest-base',
-    version='0.1.2',
+    version='0.1.3',
     url='https://github.com/devluci/django-rest-base',
     author='Lucid (@devluci)',
     author_email='contact@lucid.dev',
@@ -13,13 +13,11 @@ setuptools.setup(
     license='MIT',
     long_description=long_description,
     long_description_content_type='text/markdown',
-    packages=setuptools.find_packages(exclude=[
-        'rest_base.conf.app_template',
-    ]),
+    packages=setuptools.find_packages(),
     include_package_data=True,
     python_requires='>=3.8',
     install_requires=[
-        'Django>=3.0',
+        'Django==3.*',
         'djangorestframework>=3.10',
     ],
     extras_require={
