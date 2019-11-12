@@ -81,7 +81,7 @@ def model_admin(model: Type[models.Model], search_fields: list = None):
     list_display_sub = []
     list_display_link = dict()
 
-    base_fields = set(f.name for f in BaseModel._meta._get_fields(reverse=False))
+    base_fields = set(f.name for f in BaseModel._meta.get_fields())
 
     for field in model._meta._get_fields(reverse=False):
         if not primary_key_display and field.primary_key:
