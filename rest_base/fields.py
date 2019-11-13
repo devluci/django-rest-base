@@ -7,7 +7,6 @@ from typing import Type, Callable, Any
 from django.db import ProgrammingError, OperationalError
 from django.db.models import Model, Field
 
-from rest_base.models import BaseModel
 from rest_base.settings import base_settings
 from rest_base.utils.registry import ModuleRegistry
 
@@ -129,7 +128,7 @@ class UniqueRandomChar(UniqueRandom):
         return _random
 
 
-def initialize_base_fields(model: Type[BaseModel]) -> Type[BaseModel]:
+def initialize_base_fields(model: Type[Model]) -> None:
     app_label = model._meta.app_label
     model_name = model._meta.model_name
 
@@ -150,10 +149,8 @@ def initialize_base_fields(model: Type[BaseModel]) -> Type[BaseModel]:
         if issubclass(default, UniqueRandom) and not field.unique:
             raise ValueError(f'{model_name}.{field_name}.unique must be True to use UniqueRandom')
 
-        func_name = f'{app_label}_{model_name}_{default}'
+        func_name = f'{app_label}_{model_name}_default'
         default_func = default.get_default_func(model, field)
 
         unique_random[func_name] = default_func
         field.default = default_func
-
-    return model
