@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf8') as f:
 
 setuptools.setup(
     name='django-rest-base',
-    version='0.1.6',
+    version='0.1.7',
     url='https://github.com/devluci/django-rest-base',
     author='Lucid (@devluci)',
     author_email='contact@lucid.dev',

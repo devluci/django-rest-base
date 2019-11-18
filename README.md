@@ -49,17 +49,24 @@ REST_FRAMEWORK = {
 ```python
 from rest_base.errors import Error
 
-MyAppError = Error('my_app')
+MyAppError = Error('my_app')  # class
 
-MY_ERROR = MyAppError('My', 'Error')
+MyError = MyAppError('My', 'Error')  # class
+MyErrorInstance = MyError(detail='caution: this is instance!')  # instance (when *args and code not provided)
 ```
 
 #### `views.py`
 ```python
-from my_app.errors import MY_ERROR
+from my_app.errors import MyError, MyErrorInstance
 
 def my_view(request):
-    raise MY_ERROR(detail='Something went wrong :(')
+    raise MyError(detail='Something went wrong :(')
+
+def another_view1(request):
+    raise MyError  # raise without parameters is also permitted
+
+def another_view2(request):
+    raise MyErrorInstance()  # __call__ should be used to raise instance
 ```
 
 `rest_base.errors.exception_handler` is similar with REST framework's default handler, but provides advanced error format.
