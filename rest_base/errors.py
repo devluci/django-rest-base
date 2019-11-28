@@ -126,7 +126,7 @@ class Error(APIException):
         return f'Error ({self._app}::{self._code})'
 
     def __call__(self, *args, code: str = None, detail: str = None, extra: Any = None, tb: str = None) -> Error:
-        return Error(self._app, *args, code=code, detail=detail, extra=extra, tb=tb)
+        return self.__class__(*args, code=code, detail=detail, extra=extra, tb=tb)
 
     @cached_property
     def serialized(self) -> Error.Serialized:

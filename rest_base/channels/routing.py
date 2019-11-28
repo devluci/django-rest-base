@@ -1,10 +1,3 @@
-try:
-    import channels
-except ImportError as e:
-    raise ImportError(
-        'channels must be installed to use rest_base.routing. Try `pip install django-rest-base[channels]`.'
-    ) from e
-
 from typing import List, Union
 
 from channels.routing import URLRouter

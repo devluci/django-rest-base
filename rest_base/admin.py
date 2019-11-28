@@ -53,13 +53,16 @@ def _get_multiple_link_method(field: related.ManyToManyField):
     def link_method(self, instance):
         link_list = []
         for foreign_instance in getattr(instance, field_name).all()[:MAX_FOREIGN_OBJECT_PREVIEW]:
-            href = urls.reverse(
-                f'admin:{foreign_model._meta.app_label.lower()}_{foreign_model._meta.object_name.lower()}_change',
-                args=[foreign_instance.pk],
-            )
             instance_str = escape(str(foreign_instance))
-
-            link_list.append(f'<a href="{href}" target="_blank">{instance_str}</a>')
+            app_label = foreign_model._meta.app_label.lower()
+            object_name = foreign_model._meta.object_name.lower()
+            if app_label == 'auth' and object_name == 'permission':
+                link_list.append(instance_str)
+            else:
+                url = urls.reverse('admin:{}_{}_change'.format(
+                        foreign_model._meta.app_label.lower(), foreign_model._meta.object_name.lower()
+                    ), args=[foreign_instance.pk])
+                link_list.append(f'<a href="{url}" target="_blank">{instance_str}</a>')
 
         if not link_list:
             return NULL

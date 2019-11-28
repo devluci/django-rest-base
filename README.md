@@ -102,7 +102,7 @@ urlpatterns = [
 ```
 
 `rest_base.urls.method_branch` branch the requests by it's method—`GET`, `POST`, `PUT`, `DELETE`.
-It also supports `@rest_framework.decorators.permission_classes` for each view.
+It also supports `@rest_framework.decorators.authentication_classes` and `@rest_framework.decorators.permission_classes` for each view.
 
 
 
@@ -265,7 +265,7 @@ pip install django-rest-base[channels]
 #### `routing.py`
 ```python
 from django.urls import path
-from rest_base.routing import NullURLRouter
+from rest_base.channels.routing import NullURLRouter
 
 websocket_urlpatterns = [
     path('app/', NullURLRouter(my_app.routing.websocket_urlpatterns)),

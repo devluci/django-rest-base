@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf8') as f:
 
 setuptools.setup(
     name='django-rest-base',
-    version='0.1.7',
+    version='0.1.8',
     url='https://github.com/devluci/django-rest-base',
     author='Lucid (@devluci)',
     author_email='contact@lucid.dev',
@@ -22,7 +22,7 @@ setuptools.setup(
     ],
     extras_require={
         'jwt': ['PyJWT'],
-        'channels': ['channels'],
+        'channels': ['channels==2.3.1'],
         'sentry': ['sentry-sdk'],
         'random': ['numpy'],
     },
